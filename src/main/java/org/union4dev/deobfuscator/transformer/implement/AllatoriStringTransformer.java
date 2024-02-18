@@ -57,11 +57,11 @@ public class AllatoriStringTransformer extends Transformer {
                             isDecrypt = true;
 
                         if (isDecrypt) {
-                            final Frame<SourceValue> f = frames[method.instructions.indexOf(methodInsnNode)];
-                            if (f.getStack(f.getStackSize() - 1).insns.size() != 1) { // ldc
+                            final Frame<SourceValue> frame = frames[method.instructions.indexOf(methodInsnNode)];
+                            if (frame.getStack(frame.getStackSize() - 1).insns.size() != 1) { // ldc
                                 continue;
                             }
-                            final AbstractInsnNode abstractInsnNode = f.getStack(f.getStackSize() - 1).insns.iterator().next();
+                            final AbstractInsnNode abstractInsnNode = frame.getStack(frame.getStackSize() - 1).insns.iterator().next();
 
                             if (!ClassNodeUtil.isString(abstractInsnNode))
                                 continue;
