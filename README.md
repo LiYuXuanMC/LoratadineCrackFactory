@@ -1,0 +1,2 @@
+# DeobfuscatorBase
+Java deobfuscator base
