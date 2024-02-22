@@ -37,7 +37,7 @@ public class AllatoriStringTransformer extends Transformer {
             for (MethodNode method : classNode.methods) {
                 try {
                     final Frame<SourceValue>[] frames = new Analyzer<>(new SourceInterpreter()).analyze(classNode.name, method);
-                    final InstructionModifier instructionModifier = new InstructionModifier();
+                    final InstructionModifier modifier = new InstructionModifier();
                     for (AbstractInsnNode instruction : method.instructions) {
                         if (instruction.getOpcode() != INVOKESTATIC)
                             continue;
@@ -75,11 +75,11 @@ public class AllatoriStringTransformer extends Transformer {
                             decryptMethod.setAccessible(true);
 
                             ldcInsnNode.cst = decryptMethod.invoke(null, encrypted);
-                            instructionModifier.remove(instruction);
+                            modifier.remove(instruction);
                             count++;
                         }
                     }
-                    instructionModifier.apply(method);
+                    modifier.apply(method);
                 } catch (Throwable t) {
                     Logger.error(t);
                 }
