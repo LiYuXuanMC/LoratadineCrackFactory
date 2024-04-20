@@ -59,6 +59,20 @@ public class ClassNodeUtil {
         return false;
     }
 
+    public static Number getNumber(AbstractInsnNode node) {
+        if(node.getOpcode() >= Opcodes.ICONST_M1 && node.getOpcode() <= Opcodes.ICONST_5)
+            return node.getOpcode() - 3;
+        if(node.getOpcode() == Opcodes.SIPUSH || node.getOpcode() == Opcodes.BIPUSH)
+            return ((IntInsnNode)node).operand;
+        if(node instanceof LdcInsnNode) {
+            final LdcInsnNode ldc = (LdcInsnNode)node;
+            if (ldc.cst instanceof Number) {
+                return (Number) ldc.cst;
+            }
+        }
+        return null;
+    }
+
     public static boolean isString(AbstractInsnNode node) {
         if (node instanceof LdcInsnNode) {
             final LdcInsnNode ldc = (LdcInsnNode) node;
