@@ -3,10 +3,6 @@ package org.union4dev.deobfuscator.util;
 import org.objectweb.asm.Opcodes;
 import org.objectweb.asm.tree.*;
 
-import java.util.HashMap;
-import java.util.Map;
-import java.util.concurrent.atomic.AtomicInteger;
-
 // https://github.com/java-deobfuscator/deobfuscator/blob/master/src/main/java/com/javadeobfuscator/deobfuscator/utils/TransformerHelper.java
 public class TransformerHelper implements Opcodes {
 

@@ -66,7 +66,7 @@ public class StringWrapperTransformer extends Transformer {
                 }
             }
         }
-        Logger.info("Finish StringWrapperTransformer with " + count + " String decrypted.");
+        Logger.info("Finish StringWrapperTransformer with " + count + " strings decrypted.");
     }
 
     private boolean isDecrypt(MethodNode methodNode) {

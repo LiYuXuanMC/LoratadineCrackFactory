@@ -27,7 +27,7 @@ public class BranchlockStringTransformer extends Transformer {
     @Override
     public void transform(Map<String, ClassNode> nodeMap) {
         Logger.info("Start BranchlockStringTransformer.");
-
+        int count = 0;
         for (ClassNode classNode : nodeMap.values()) {
             try {
                 final MethodNode method = ClassNodeUtil.getMethod(classNode, "<clinit>", "()V");
@@ -121,6 +121,7 @@ public class BranchlockStringTransformer extends Transformer {
                                 throw new IllegalStateException("Unknown opcode");
                             }
 
+                            count++;
                             modifier.replace(instruction, new LdcInsnNode(strings[index]));
                             modifier.removeAll(cut);
                         }
@@ -131,5 +132,6 @@ public class BranchlockStringTransformer extends Transformer {
                 Logger.error(t);
             }
         }
+        Logger.info("Finish BranchlockStringTransformer with " + count + " strings decrypted.");
     }
 }

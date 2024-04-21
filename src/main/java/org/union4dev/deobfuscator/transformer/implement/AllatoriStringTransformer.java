@@ -91,7 +91,7 @@ public class AllatoriStringTransformer extends Transformer {
             nodeFromClasspath.methods.remove(method);
         });
 
-        Logger.info("Finish AllatoriStringTransformer with " + count + " String decrypted and " + decryptFn.size() + " decrypt method removed.");
+        Logger.info("Finish AllatoriStringTransformer with " + count + " strings decrypted and " + decryptFn.size() + " decrypt methods removed.");
     }
 
     private boolean checkMethod(MethodInsnNode methodInsnNode, Map<String, MethodNode> decryptFn) {
