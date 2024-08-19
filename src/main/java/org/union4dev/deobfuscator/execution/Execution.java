@@ -8,12 +8,12 @@ public class Execution {
     public static Class<?> load(ClassNode cn) {
         final ClassWriter classWriter = new ClassWriter(0);
         cn.accept(classWriter);
-        return new SuperClassLoader(ClassLoader.getSystemClassLoader(), false).get(cn.name.replace("/", "."), classWriter.toByteArray());
+        return new ExecutionClassLoader(ClassLoader.getSystemClassLoader(), false).get(cn.name.replace("/", "."), classWriter.toByteArray());
     }
 
     public static Class<?> loadIgnoreImports(ClassNode cn) {
         final ClassWriter classWriter = new ClassWriter(0);
         cn.accept(classWriter);
-        return new SuperClassLoader(ClassLoader.getSystemClassLoader(), true).get(cn.name.replace("/", "."), classWriter.toByteArray());
+        return new ExecutionClassLoader(ClassLoader.getSystemClassLoader(), true).get(cn.name.replace("/", "."), classWriter.toByteArray());
     }
 }

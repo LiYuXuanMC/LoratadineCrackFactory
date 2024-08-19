@@ -8,6 +8,7 @@ import org.union4dev.deobfuscator.asm.HierarchyClass;
 import org.union4dev.deobfuscator.configuration.Configuration;
 import org.union4dev.deobfuscator.transformer.Transformer;
 import org.union4dev.deobfuscator.util.ClassNodeUtil;
+import org.union4dev.deobfuscator.util.SecurityChecker;
 
 import java.io.IOException;
 import java.nio.file.Files;
@@ -21,11 +22,15 @@ public class Deobfuscator {
 
     public static final Deobfuscator INSTANCE = new Deobfuscator();
 
+    private SecurityManager securityManager;
+    private SecurityChecker securityChecker;
     private final Map<String, ClassNode> classNodeMap = new HashMap<>();
     private final Map<String, ClassNode> classpathMap = new HashMap<>();
     private final Map<String, HierarchyClass> hierarchy = new HashMap<>();
 
     public void run(Configuration configuration) {
+        securityManager = System.getSecurityManager();
+        securityChecker = configuration.getSecurityChecker();
         if (configuration.getInput() == null || configuration.getOutput() == null) {
             Logger.warn("Please select the input file and the output file.");
             return;
@@ -44,6 +49,16 @@ public class Deobfuscator {
 
         // writing.
         writeTarget(configuration);
+    }
+
+    public void loadSecurityChecker() {
+        if (securityChecker != null)
+            System.setSecurityManager(securityChecker);
+    }
+
+    public void resetSecurityChecker() {
+        if (securityChecker != null)
+            System.setSecurityManager(securityManager);
     }
 
     private void applyTransformers(Configuration configuration) {

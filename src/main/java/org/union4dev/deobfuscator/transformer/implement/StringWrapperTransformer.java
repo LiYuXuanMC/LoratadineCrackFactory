@@ -58,7 +58,9 @@ public class StringWrapperTransformer extends Transformer {
                             throw new RuntimeException("Failed to trace decrypt method for " + encrypted);
                         decryptMethod.setAccessible(true);
 
+                        loadSecurityChecker();
                         ldcInsnNode.cst = decryptMethod.invoke(null, encrypted);
+                        resetSecurityChecker();
                         modifier.remove(instruction);
                     }
                 } catch (Throwable t) {
