@@ -1,7 +1,6 @@
 package org.union4dev.deobfuscator;
 
 import com.beust.jcommander.JCommander;
-import com.beust.jcommander.Parameter;
 import com.beust.jcommander.ParameterException;
 import org.union4dev.deobfuscator.configuration.ProcessConfiguration;
 import org.union4dev.deobfuscator.jar2bytes.Jar2Bytes;
@@ -9,11 +8,9 @@ import org.tinylog.Logger;
 import org.union4dev.deobfuscator.configuration.Configuration;
 import org.union4dev.deobfuscator.execution.DynamicDumper;
 import org.union4dev.deobfuscator.execution.LWJGLDummy;
-import org.union4dev.deobfuscator.transformer.implement.CrackTransformer;
+import org.union4dev.deobfuscator.transformer.implement.CrackTransformer_V1_2;
 
-import javax.annotation.processing.Processor;
 import java.io.*;
-import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.util.ArrayList;
 import java.util.List;
@@ -56,7 +53,7 @@ public class RunnableMain {
         configuration.setOutput("output.jar");
         configuration.addClasspath(processConfiguration.rtPath);
         configuration.addClasspath(processConfiguration.binPath);
-        configuration.addTransformer(new CrackTransformer());
+        configuration.addTransformer(new CrackTransformer_V1_2());
         Deobfuscator.INSTANCE.run(configuration);
         Logger.info("Transformed, start generating cracked dll...");
         File classesCpp = new File("loader/loader/src/base/classes/classes.hpp");

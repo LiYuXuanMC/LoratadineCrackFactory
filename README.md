@@ -1,4 +1,3 @@
-# DeobfuscatorBase
-Java deobfuscator base (WIP)
+Base: https://github.com/EscapistKid/DeobfuscatorBase
 
-This project provide a simple base to create your own transformer easily
+Required java17

@@ -7,7 +7,7 @@ import org.tinylog.Logger;
 import org.union4dev.deobfuscator.asm.HierarchyClass;
 import org.union4dev.deobfuscator.configuration.Configuration;
 import org.union4dev.deobfuscator.transformer.Transformer;
-import org.union4dev.deobfuscator.transformer.implement.CrackTransformer;
+import org.union4dev.deobfuscator.transformer.implement.CrackTransformer_V1_2;
 import org.union4dev.deobfuscator.util.ClassNodeUtil;
 
 import java.io.File;
@@ -137,7 +137,7 @@ public class Deobfuscator {
                 final Enumeration<? extends JarEntry> entries = jarFile.entries();
                 while (entries.hasMoreElements()) {
                     final JarEntry ent = entries.nextElement();
-                    if (!ent.getName().endsWith(".class") || CrackTransformer.notModified.contains(ent.getName().replace(".class",""))) {
+                    if (!ent.getName().endsWith(".class") || CrackTransformer_V1_2.notModified.contains(ent.getName().replace(".class",""))) {
                         final JarEntry file = new JarEntry(ent.getName());
                         jarOutputStream.putNextEntry(file);
                         jarOutputStream.write(IOUtils.toByteArray(jarFile.getInputStream(ent)));
@@ -149,7 +149,7 @@ public class Deobfuscator {
             // Writing classes.
             for (ClassNode classNode : classNodeMap.values()) {
                 final byte[] bytes = ClassNodeUtil.parseNode(classNode);
-                if (bytes != null && !CrackTransformer.notModified.contains(classNode.name)) {
+                if (bytes != null && !CrackTransformer_V1_2.notModified.contains(classNode.name)) {
                     Logger.info("Write class {}",classNode.name);
                     jarOutputStream.putNextEntry(new JarEntry(classNode.name + ".class"));
                     jarOutputStream.write(bytes);

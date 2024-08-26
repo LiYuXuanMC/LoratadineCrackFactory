@@ -1,0 +1,1 @@
+const char* mian_klass = "IiIIiiiIIIiIiI";

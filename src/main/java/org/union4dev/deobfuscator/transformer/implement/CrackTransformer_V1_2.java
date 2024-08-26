@@ -2,8 +2,6 @@ package org.union4dev.deobfuscator.transformer.implement;
 
 import org.apache.commons.io.FileUtils;
 import org.objectweb.asm.Label;
-import org.objectweb.asm.MethodVisitor;
-import org.objectweb.asm.Type;
 import org.objectweb.asm.tree.*;
 import org.tinylog.Logger;
 import org.union4dev.deobfuscator.transformer.Transformer;
@@ -15,9 +13,8 @@ import java.nio.file.Files;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
-import java.util.function.Predicate;
 
-public class CrackTransformer extends Transformer {
+public class CrackTransformer_V1_2 extends Transformer {
     public static List<String> notModified = new ArrayList<>();
     @Override
     public void transform(Map<String, ClassNode> nodeMap) {
