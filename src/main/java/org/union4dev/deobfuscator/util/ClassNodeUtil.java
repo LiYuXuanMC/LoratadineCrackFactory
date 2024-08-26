@@ -10,7 +10,7 @@ import org.union4dev.deobfuscator.asm.SuperClassWriter;
 public class ClassNodeUtil {
 
     public static byte[] parseNode(ClassNode classNode) {
-        ClassWriter writer = new SuperClassWriter(ClassWriter.COMPUTE_FRAMES);
+        ClassWriter writer = new SuperClassWriter(3);
         try {
             classNode.accept(writer);
         } catch (Throwable e) {

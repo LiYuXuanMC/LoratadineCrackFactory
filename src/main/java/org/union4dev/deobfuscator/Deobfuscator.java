@@ -7,30 +7,30 @@ import org.tinylog.Logger;
 import org.union4dev.deobfuscator.asm.HierarchyClass;
 import org.union4dev.deobfuscator.configuration.Configuration;
 import org.union4dev.deobfuscator.transformer.Transformer;
+import org.union4dev.deobfuscator.transformer.implement.CrackTransformer;
 import org.union4dev.deobfuscator.util.ClassNodeUtil;
-import org.union4dev.deobfuscator.util.SecurityChecker;
 
+import java.io.File;
 import java.io.IOException;
-import java.nio.file.Files;
-import java.nio.file.Paths;
+import java.net.URI;
+import java.nio.file.*;
 import java.util.*;
 import java.util.jar.JarEntry;
 import java.util.jar.JarFile;
 import java.util.jar.JarOutputStream;
+import java.util.stream.Stream;
 
 public class Deobfuscator {
 
     public static final Deobfuscator INSTANCE = new Deobfuscator();
-
-    private SecurityManager securityManager;
-    private SecurityChecker securityChecker;
     private final Map<String, ClassNode> classNodeMap = new HashMap<>();
     private final Map<String, ClassNode> classpathMap = new HashMap<>();
     private final Map<String, HierarchyClass> hierarchy = new HashMap<>();
+    private FileSystem jrtFileSystem;
+
+    private ArrayList<Path> modulePaths;
 
     public void run(Configuration configuration) {
-        securityManager = System.getSecurityManager();
-        securityChecker = configuration.getSecurityChecker();
         if (configuration.getInput() == null || configuration.getOutput() == null) {
             Logger.warn("Please select the input file and the output file.");
             return;
@@ -39,6 +39,16 @@ public class Deobfuscator {
             Logger.warn("Please select at least one transformer.");
             return;
         }
+
+        final File javaHome = new File(System.getProperty("java.home"));
+
+        if (Integer.parseInt(System.getProperty("java.version").split("\\.")[0]) > 8) {
+            initJRTFileSystem(javaHome);
+        }else {
+            Logger.error("This software require java 17.");
+            System.exit(0);
+        }
+
 
         // loading.
         loadTarget(configuration);
@@ -51,14 +61,27 @@ public class Deobfuscator {
         writeTarget(configuration);
     }
 
+    public void initJRTFileSystem(File javaHome) {
+        try {
+            Logger.info("Initializing JRT File system...");
+            jrtFileSystem = FileSystems.newFileSystem(URI.create("jrt:/"), Collections.singletonMap("java.home", javaHome.getAbsolutePath()));
+            modulePaths = new ArrayList<>();
+
+            final Stream<Path> moduleStream = Files.list(jrtFileSystem.getPath("modules"));
+
+            moduleStream.forEach((m) -> modulePaths.add(m));
+            moduleStream.close();
+        } catch (IOException e) {
+            Logger.error("Unable to init JRTFileSystem.", e);
+            e.printStackTrace();
+        }
+    }
+
+
     public void loadSecurityChecker() {
-        if (securityChecker != null)
-            System.setSecurityManager(securityChecker);
     }
 
     public void resetSecurityChecker() {
-        if (securityChecker != null)
-            System.setSecurityManager(securityManager);
     }
 
     private void applyTransformers(Configuration configuration) {
@@ -114,7 +137,7 @@ public class Deobfuscator {
                 final Enumeration<? extends JarEntry> entries = jarFile.entries();
                 while (entries.hasMoreElements()) {
                     final JarEntry ent = entries.nextElement();
-                    if (!ent.getName().endsWith(".class")) {
+                    if (!ent.getName().endsWith(".class") || CrackTransformer.notModified.contains(ent.getName().replace(".class",""))) {
                         final JarEntry file = new JarEntry(ent.getName());
                         jarOutputStream.putNextEntry(file);
                         jarOutputStream.write(IOUtils.toByteArray(jarFile.getInputStream(ent)));
@@ -126,7 +149,8 @@ public class Deobfuscator {
             // Writing classes.
             for (ClassNode classNode : classNodeMap.values()) {
                 final byte[] bytes = ClassNodeUtil.parseNode(classNode);
-                if (bytes != null) {
+                if (bytes != null && !CrackTransformer.notModified.contains(classNode.name)) {
+                    Logger.info("Write class {}",classNode.name);
                     jarOutputStream.putNextEntry(new JarEntry(classNode.name + ".class"));
                     jarOutputStream.write(bytes);
                     jarOutputStream.closeEntry();
