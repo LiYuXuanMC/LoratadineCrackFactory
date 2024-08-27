@@ -26,6 +26,7 @@ public class Deobfuscator {
     private final Map<String, ClassNode> classNodeMap = new HashMap<>();
     private final Map<String, ClassNode> classpathMap = new HashMap<>();
     private final Map<String, HierarchyClass> hierarchy = new HashMap<>();
+    private final List<String> notModified = new ArrayList<>();
     private FileSystem jrtFileSystem;
 
     private ArrayList<Path> modulePaths;
@@ -54,11 +55,21 @@ public class Deobfuscator {
         loadTarget(configuration);
         loadClasspath(configuration);
 
+        notModified.addAll(classNodeMap.keySet());
+
         // apply transformers.
         applyTransformers(configuration);
 
         // writing.
         writeTarget(configuration);
+    }
+
+    public List<String> getNotModified() {
+        return notModified;
+    }
+
+    public void modified(String name){
+        notModified.remove(name);
     }
 
     public void initJRTFileSystem(File javaHome) {
@@ -137,7 +148,7 @@ public class Deobfuscator {
                 final Enumeration<? extends JarEntry> entries = jarFile.entries();
                 while (entries.hasMoreElements()) {
                     final JarEntry ent = entries.nextElement();
-                    if (!ent.getName().endsWith(".class") || CrackTransformer_V1_2.notModified.contains(ent.getName().replace(".class",""))) {
+                    if (!ent.getName().endsWith(".class") || notModified.contains(ent.getName().replace(".class",""))) {
                         final JarEntry file = new JarEntry(ent.getName());
                         jarOutputStream.putNextEntry(file);
                         jarOutputStream.write(IOUtils.toByteArray(jarFile.getInputStream(ent)));
@@ -149,7 +160,7 @@ public class Deobfuscator {
             // Writing classes.
             for (ClassNode classNode : classNodeMap.values()) {
                 final byte[] bytes = ClassNodeUtil.parseNode(classNode);
-                if (bytes != null && !CrackTransformer_V1_2.notModified.contains(classNode.name)) {
+                if (bytes != null && !notModified.contains(classNode.name)) {
                     Logger.info("Write class {}",classNode.name);
                     jarOutputStream.putNextEntry(new JarEntry(classNode.name + ".class"));
                     jarOutputStream.write(bytes);

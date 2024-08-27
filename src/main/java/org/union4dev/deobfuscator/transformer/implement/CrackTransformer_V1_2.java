@@ -4,6 +4,7 @@ import org.apache.commons.io.FileUtils;
 import org.objectweb.asm.Label;
 import org.objectweb.asm.tree.*;
 import org.tinylog.Logger;
+import org.union4dev.deobfuscator.Deobfuscator;
 import org.union4dev.deobfuscator.transformer.Transformer;
 
 import java.io.File;
@@ -15,11 +16,9 @@ import java.util.List;
 import java.util.Map;
 
 public class CrackTransformer_V1_2 extends Transformer {
-    public static List<String> notModified = new ArrayList<>();
     @Override
     public void transform(Map<String, ClassNode> nodeMap) {
         Logger.info("Start Cracking...");
-        notModified.addAll(nodeMap.keySet());
         ClassNode added2 = null;
         for (ClassNode value : nodeMap.values()) {
             if(value.name.equals("cn/lzq/injection/Fucker")){
@@ -42,7 +41,7 @@ public class CrackTransformer_V1_2 extends Transformer {
                                     }
                                 }
                                 try {
-                                    notModified.remove(methodInsnNode.owner);
+                                    Deobfuscator.INSTANCE.modified(methodInsnNode.owner);
                                     String initClientMethod = "";
                                     ClassNode mainNode = nodeMap.get(methodInsnNode.owner);
                                     for (MethodNode methodNode : mainNode.methods) {
@@ -108,7 +107,7 @@ public class CrackTransformer_V1_2 extends Transformer {
 
                     if(method.name.equals("<init>") && method.desc.equals("(Lio/netty/channel/Channel;)V")){
                         Logger.info("Found ByteUtil Class {}",value.name);
-                        notModified.remove(value.name);
+                        Deobfuscator.INSTANCE.modified(value.name);
                         for (MethodNode methodNode : value.methods) {
                             if(methodNode.desc.equals("()V") && !methodNode.name.equals("<init>")){
                                 method.instructions.clear();
@@ -120,7 +119,7 @@ public class CrackTransformer_V1_2 extends Transformer {
 
                     if(method.desc.equals("(Lnet/minecraftforge/event/TickEvent$ClientTickEvent;)V")){
                         Logger.info("Found tick auth method in class {}.",value.name);
-                        notModified.remove(value.name);
+                        Deobfuscator.INSTANCE.modified(value.name);
                         for (AbstractInsnNode instruction : method.instructions) {
                             if(instruction instanceof MethodInsnNode methodInsnNode){
                                 if(methodInsnNode.getOpcode() == INVOKEVIRTUAL && methodInsnNode.owner.equals(value.name) && methodInsnNode.desc.equals("()V")){
@@ -135,7 +134,7 @@ public class CrackTransformer_V1_2 extends Transformer {
                     for (AbstractInsnNode instruction : method.instructions) {
                         if(instruction instanceof MethodInsnNode methodInsnNode){
                             if(methodInsnNode.name.equals("exit")){
-                                notModified.remove(value.name);
+                                Deobfuscator.INSTANCE.modified(value.name);
                                 Logger.info("Found exit instruction in class {}",value.name);
                                 method.instructions.remove(instruction.getPrevious());
                                 method.instructions.remove(instruction);
@@ -145,7 +144,7 @@ public class CrackTransformer_V1_2 extends Transformer {
                     }
                 }
                 if(toRemove != null){
-                    notModified.remove(value.name);
+                    Deobfuscator.INSTANCE.modified(value.name);
                     value.methods.remove(toRemove);
 
                     MethodNode methodVisitor = new MethodNode(toRemove.access,toRemove.name,toRemove.desc,null,null);
