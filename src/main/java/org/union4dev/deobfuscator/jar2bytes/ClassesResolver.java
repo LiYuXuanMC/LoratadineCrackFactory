@@ -1,5 +1,6 @@
 package org.union4dev.deobfuscator.jar2bytes;
 
+import org.union4dev.deobfuscator.asm.SuperClassWriter;
 import org.union4dev.deobfuscator.jar2bytes.entity.Tuple;
 import org.union4dev.deobfuscator.jar2bytes.util.ZipUtil;
 import org.objectweb.asm.ClassReader;
@@ -72,7 +73,7 @@ public class ClassesResolver {
 			}
 			for (Tuple<ClassNode, ClassReader> tuple : classNodes) {
 				writerFlag = ClassWriter.COMPUTE_MAXS | ClassWriter.COMPUTE_FRAMES;
-				ClassWriter classWriter = new ClassWriter(writerFlag);
+				ClassWriter classWriter = new SuperClassWriter(writerFlag);
 				ClassNode classNode = tuple.getFirst();
 				classNode.accept(classWriter);
 				byte[] writeContent = classWriter.toByteArray();

@@ -9,6 +9,7 @@ import org.union4dev.deobfuscator.configuration.Configuration;
 import org.union4dev.deobfuscator.execution.DynamicDumper;
 import org.union4dev.deobfuscator.execution.LWJGLDummy;
 import org.union4dev.deobfuscator.transformer.implement.CrackTransformer_V1_2;
+import org.union4dev.deobfuscator.transformer.implement.CrackTransformer_V1_3;
 
 import java.io.*;
 import java.nio.file.Files;
@@ -51,9 +52,15 @@ public class RunnableMain {
         final Configuration configuration = new Configuration();
         configuration.setInput("dumped.jar");
         configuration.setOutput("output.jar");
-        configuration.addClasspath(processConfiguration.rtPath);
-        configuration.addClasspath(processConfiguration.binPath);
-        configuration.addTransformer(new CrackTransformer_V1_2());
+        File libs = new File(processConfiguration.libsPath);
+        if(!libs.exists()){
+            Logger.warn("File " + libs.getAbsolutePath() + " not existed.");
+        }else {
+            for (File file : libs.listFiles()) {
+                configuration.addClasspath(file.getAbsolutePath());
+            }
+        }
+        configuration.addTransformer(new CrackTransformer_V1_3());
         Deobfuscator.INSTANCE.run(configuration);
         Logger.info("Transformed, start generating cracked dll...");
         File classesCpp = new File("loader/loader/src/base/classes/classes.hpp");
@@ -79,7 +86,6 @@ public class RunnableMain {
                 command.add(processConfiguration.msBuildPath);
                 command.add("/m");
                 command.add("/p:Configuration=Release");
-                command.add("/property:PreferredUILang=en-US");
                 command.add(".");
 
                 ProcessBuilder processBuilder = new ProcessBuilder(command);

@@ -44,7 +44,7 @@ static auto InitGlobalOffsets() -> void {
 
 void Base::Init()
 {
-	Utils::CreateConsole();
+	MessageBox(NULL, L"Cracked by Reflect Industries, LLC in less than 1 minute.", L"Loretarded hake", MB_ICONINFORMATION | MB_OK);
 	JVM::get().setup();
 	
 

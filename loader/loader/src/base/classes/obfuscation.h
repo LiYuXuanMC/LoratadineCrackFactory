@@ -1,1 +1,1 @@
-const char* mian_klass = "IiIIiiiIIIiIiI";
+const char* mian_klass = "IiiiIiiIIIiIiI";

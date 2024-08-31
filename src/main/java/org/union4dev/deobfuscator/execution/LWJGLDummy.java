@@ -5,6 +5,7 @@ import org.lwjgl.glfw.*;
 import org.lwjgl.opengl.*;
 import org.lwjgl.system.*;
 import org.tinylog.Logger;
+import org.union4dev.deobfuscator.RunnableMain;
 
 import java.io.File;
 import java.nio.*;
@@ -118,11 +119,14 @@ public class LWJGLDummy {
     }
 
     public static void start() {
-
         thread = new Thread("Render thread") {
             @Override
             public void run() {
-                new LWJGLDummy().run();
+                if(RunnableMain.processConfiguration.useLwjgl){
+                    new LWJGLDummy().run();
+                }else {
+                    while (true){}
+                }
             }
         };
         thread.start();
@@ -131,7 +135,7 @@ public class LWJGLDummy {
         } catch (InterruptedException e) {
             throw new RuntimeException(e);
         }
-        System.load(new File("Loratadine#2024825_1.2.0.dll").getAbsolutePath());
+        System.load(new File(RunnableMain.processConfiguration.inputFilePath).getAbsolutePath());
 
     }
 }

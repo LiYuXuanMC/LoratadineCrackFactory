@@ -10,9 +10,7 @@ Required java17
 
 Download our [Pre Build Environment](https://github.com/LiYuXuanMC/LoratadineCrackFactory/releases/download/pre-build/LoratadineCrackFactory.zip)
 
-You can delete `LoratadineCrackFactory.exe`, it is a pre build jar packed with exe4j
-
-Place jar built by yourself here our just use `LoratadineCrackFactory.exe`
+Delete `LoratadineCrackFactory.exe`, it is a pre build jar packed with exe4j
 
 To run this tool, you need to have these requirements installed:
 
@@ -24,19 +22,20 @@ Can be found in: https://www.azul.com/downloads/?version=java-17-lts&package=jdk
 
 Available at: https://visualstudio.microsoft.com/
 
-### Forge 1.18.1 srg binary
+### Libraries
 
-- Install Minecraft 1.18.1 with Forge.
-- Locate the `client-1.18.1-20211210.034407-srg` file in the `.minecraft/libraries` directory.
+Get flow libraries from anywhere:
 
-You can also download it in https://github.com/LiYuXuanMC/LoratadineCrackFactory/releases/download/pre-build/client-1.18.1-20211210.034407-srg.jar
+- client-1.18.1-20211210.034407-srg.jar
+- fastutil-8.5.6.jar
+- gson-2.8.8.jar
+- netty-all-4.1.68.Final.jar
+- rt.jar
 
-### rt.jar
-
-Obtain this from any Java 1.8 `lib` directory.
+put to `libs` folder
 
 ### Example Argument
 
 ```bash
--input Loratadine#2024825_1.2.0.dll -output cracked.dll -msBuildPath "C:\Program Files\Microsoft Visual Studio\2022\Community\MSBuild\Current\Bin\MSBuild.exe" -rtPath rt.jar -binPath client-1.18.1-20211210.034407-srg.jar
+-input Loratadine#2024825_1.2.0.dll -output cracked.dll -msBuildPath "C:\Program Files\Microsoft Visual Studio\2022\Community\MSBuild\Current\Bin\MSBuild.exe" -libPath libs -fakeThread
 ```
